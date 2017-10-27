@@ -1,0 +1,39 @@
+.navbar {
+  border-radius: 0;
+}
+
+.navbar-title {
+  padding-left: 10px;
+}
+
+.navbar-subtitle {
+  float: left;
+  color: #D0D0D0;
+  padding: 13px 20px;
+  line-height: 24px;
+  font-size: 12px;
+}
+
+.user-info {
+  color: white;
+  padding: 4px 15px;
+  background-color: #15599F;
+}
+
+.user-info svg {
+  font-size: 24px;
+  vertical-align: top !important; /* override tracksuit */
+  margin: 8px 20px 8px 0;
+}
+
+.user-info span {
+  display: inline-block;
+}
+
+.user-name {
+  font-size: 16px;
+}
+
+.user-email {
+  font-size: 11px;
+}

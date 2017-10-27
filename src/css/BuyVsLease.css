@@ -1,0 +1,5 @@
+div.buy-vs-lease {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 15px;
+}

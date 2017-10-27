@@ -1,0 +1,19 @@
+span.faster-text {
+    text-align: left;
+}
+
+span.average-text {
+    text-align: center;
+}
+
+span.slower-text {
+    text-align: right;
+}
+
+label.control-label {
+    width: 100%;
+}
+
+input[type=range] {
+    padding: 0;
+}
