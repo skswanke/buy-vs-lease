@@ -7,7 +7,8 @@
 /coverage
 
 # production
-/build
+# By allowing build on github I can have a live demo for free!
+# /build
 
 # misc
 .DS_Store

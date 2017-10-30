@@ -2,6 +2,7 @@
   "name": "buy-vs-lease",
   "version": "0.1.0",
   "private": true,
+  "homepage": "http://samswanke.com/buy-vs-lease",
   "devDependencies": {
     "react-scripts": "0.9.0"
   },
