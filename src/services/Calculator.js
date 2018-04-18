@@ -32,33 +32,54 @@ export function calculateDepreciationData(msrp, depreciationFactor) {
     return data
 }
 
-export function calculateBuyVsLease(formData) {
-    let calculatedData = {}
-    calculatedData.salesTax = (formData.salesTax / 100 * formData.msrp)
-    calculatedData.downPayment = parseFloat(formData.downPayment)
-    calculatedData.titleFee = parseFloat(formData.titleFee)
-    calculatedData.registrationFee = parseFloat(formData.registrationFee)
-    calculatedData.initialCostBuy = (parseFloat(formData.downPayment)
-                       + calculatedData.salesTax
-                       + parseFloat(formData.titleFee)
-                       + parseFloat(formData.registrationFee))
+const calcSalesTax = (r, P) => ((r / 100) * P)
 
-    calculatedData.initialCostLease = (parseFloat(formData.downPayment)
-                         + parseFloat(formData.titleFee)
-                         + parseFloat(formData.registrationFee))
+const sum = array => (array.reduce((total, num) => (total + num)))
 
+const calcLoanAmortization = (msrp, down, apr, months) => {
     // Loan Amortization
     // A=P∗(r(1+r)^n)/(((1+r)^n)−1)
-    const P = parseFloat(formData.msrp) - parseFloat(formData.downPayment)
-    const r = formData.apr / 100 / 12
-    const n = formData.monthsFinanced
-    const A = P * ((r * (1 + r) ** n) / ((1 + r) ** n - 1))
-    calculatedData.monthlyPaymentsBuy = A
+    const P = msrp - down
+    const r = apr / 100 / 12
+    const n = months
+    return P * ((r * (1 + r) ** n) / ((1 + r) ** n - 1))
+}
 
-    calculatedData.monthlyGasPrice = (
-        (parseFloat(formData.milesPerMonth) / parseFloat(formData.mpg))
-        * parseFloat(formData.gasPrice)
+const calcMonthlyGas = (mpm, mpg, price) => (mpm / mpg * price)
+
+export function calculateBuyVsLease(formData) {
+    let calculatedData = {}
+    let salesTax = calcSalesTax(formData.salesTax, formData.msrp)
+    let downPayment = parseFloat(formData.downPayment)
+    titleFee = parseFloat(formData.titleFee)
+    calculatedData.registrationFee = parseFloat(formData.registrationFee)
+    calculatedData.initialCostBuy = sum([
+        parseFloat(formData.downPayment),
+        calculatedData.salesTax,
+        parseFloat(formData.titleFee),
+        parseFloat(formData.registrationFee)
+    ])
+
+    calculatedData.initialCostLease = sum([
+        parseFloat(formData.downPayment),
+        parseFloat(formData.titleFee),
+        parseFloat(formData.registrationFee)
+    ])
+
+
+    calculatedData.monthlyPaymentsBuy = calcLoanAmortization(
+        parseFloat(formData.msrp),
+        parseFloat(formData.downPayment),
+        parseFloat(formData.apr),
+        parseFloat(formData.monthsFinanced)
     )
+
+    calculatedData.monthlyGasPrice = calcMonthlyGas(
+        parseFloat(formData.milesPerMonth),
+        parseFloat(formData.mpg),
+        parseFloat(formData.gasPrice)
+    )
+
     calculatedData.monthlyRepairPrice = (parseFloat(formData.msrp) / 120)
     calculatedData.insRate = parseFloat(formData.insRate)
     calculatedData.recurringCostBuy = (calculatedData.monthlyPaymentsBuy
