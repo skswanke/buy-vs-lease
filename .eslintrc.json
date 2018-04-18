@@ -1,0 +1,17 @@
+{
+    "extends": "airbnb",
+    "parser": "babel-eslint",
+    "rules": {
+        "jsx-a11y/img-has-alt": "off",
+        "semi": "off",
+        "indent": ["error", 4],
+        "prefer-const": "warn",
+        "max-len": ["error", 120],
+        "react/jsx-indent": "off",
+        "react/jsx-indent-props": "off",
+        "react/prop-types": "off",
+        "comma-dangle": "off",
+        "class-methods-use-this": "off",
+        "no-plusplus": "off"
+    }
+}
