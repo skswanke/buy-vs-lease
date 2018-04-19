@@ -137,7 +137,7 @@ export function calculateBuyVsLease(formData) {
 
     totalCostBuy = Math.floor(totalCostBuy)
 
-    const totalMonthlyLeasePayments = yearsToKeep * 12 * monthlyLeasePayment + monthlyMileOverageLease
+    const totalMonthlyLeasePayments = yearsToKeep * 12 * (monthlyLeasePayment + monthlyMileOverageLease)
 
     const totalCostLease = sum([
         initialCostLease,
