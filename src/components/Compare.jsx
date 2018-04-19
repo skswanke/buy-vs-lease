@@ -7,7 +7,7 @@ const Compare = ({
     type,
     totalCost,
     costPerMile,
-    valueOfCar,
+    valueAfterFinance,
     initialCost,
     downPayment,
     salesTax,
@@ -27,7 +27,7 @@ const Compare = ({
             <Panel header={(<h2>{type}<hr /></h2>)} bsStyle="info">
                 <p>Total Cost: ${formatMoney(totalCost)} <br />
                     <small>Price Per Mile: ${formatMoney(costPerMile)}<br />
-                        Remaining Value: ${formatMoney(valueOfCar)}
+                        Remaining Value: ${formatMoney(valueAfterFinance)}
                     </small>
                 </p>
                 <hr />
@@ -40,7 +40,7 @@ const Compare = ({
                     </small>
                 </p>
                 <hr />
-                <p>Recurring Cost Per Month: ${formatMoney(recurringCost)}<br />
+                <p>Monthly Cost: ${formatMoney(recurringCost)}<br />
                     <small>
                         Payments: ${formatMoney(monthlyPayments)} <br />
                         Gas: ${formatMoney(monthlyGasPrice)} <br />

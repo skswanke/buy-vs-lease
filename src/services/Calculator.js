@@ -1,7 +1,7 @@
 /* eslint no-mixed-operators: off */
 
 export function calculateDepreciationData(msrp, depreciationFactor) {
-    let data = []
+    const data = []
     const yearsToCompute = 15
     const today = new Date()
     const year = today.getFullYear()
@@ -47,108 +47,134 @@ const calcLoanAmortization = (msrp, down, apr, months) => {
 
 const calcMonthlyGas = (mpm, mpg, price) => (mpm / mpg * price)
 
+const calcMileOverage = mpm => ((mpm < 1000) ? 0 : ((mpm - 1000) * 0.2))
+
+
 export function calculateBuyVsLease(formData) {
-    let calculatedData = {}
-    let salesTax = calcSalesTax(formData.salesTax, formData.msrp)
-    let downPayment = parseFloat(formData.downPayment)
-    titleFee = parseFloat(formData.titleFee)
-    calculatedData.registrationFee = parseFloat(formData.registrationFee)
-    calculatedData.initialCostBuy = sum([
+    const salesTax = calcSalesTax(parseFloat(formData.salesTax), parseFloat(formData.msrp))
+    const downPayment = parseFloat(formData.downPayment)
+    const titleFee = parseFloat(formData.titleFee)
+    const registrationFee = parseFloat(formData.registrationFee)
+
+    const initialCostBuy = sum([
         parseFloat(formData.downPayment),
-        calculatedData.salesTax,
+        salesTax,
         parseFloat(formData.titleFee),
         parseFloat(formData.registrationFee)
     ])
 
-    calculatedData.initialCostLease = sum([
+    const initialCostLease = sum([
         parseFloat(formData.downPayment),
         parseFloat(formData.titleFee),
         parseFloat(formData.registrationFee)
     ])
 
 
-    calculatedData.monthlyPaymentsBuy = calcLoanAmortization(
+    const monthlyPaymentsBuy = calcLoanAmortization(
         parseFloat(formData.msrp),
         parseFloat(formData.downPayment),
         parseFloat(formData.apr),
         parseFloat(formData.monthsFinanced)
     )
 
-    calculatedData.monthlyGasPrice = calcMonthlyGas(
+    const monthlyGasPrice = calcMonthlyGas(
         parseFloat(formData.milesPerMonth),
         parseFloat(formData.mpg),
         parseFloat(formData.gasPrice)
     )
 
-    calculatedData.monthlyRepairPrice = (parseFloat(formData.msrp) / 120)
-    calculatedData.insRate = parseFloat(formData.insRate)
-    calculatedData.recurringCostBuy = (calculatedData.monthlyPaymentsBuy
-                         + calculatedData.monthlyGasPrice
-                         + parseFloat(formData.insRate)
-                         + calculatedData.monthlyRepairPrice)
+    const monthlyRepairPrice = parseFloat(formData.msrp) / 120
+    const insRate = parseFloat(formData.insRate)
 
-    calculatedData.monthlyLeasePayment = parseFloat(formData.monthlyLeasePayment)
-    calculatedData.monthlyMileOverageLease = (parseFloat(formData.milesPerMonth) < 1000) ?
-        0 : ((parseFloat(formData.milesPerMonth) - 1000) * 0.2)
-    calculatedData.recurringCostLease = (
-        calculatedData.monthlyLeasePayment
-        + calculatedData.monthlyMileOverageLease
-        + calculatedData.monthlyGasPrice
-        + parseFloat(formData.insRate)
-        + calculatedData.monthlyRepairPrice
-    )
+    const recurringCostBuy = sum([
+        monthlyPaymentsBuy,
+        monthlyGasPrice,
+        insRate,
+        monthlyRepairPrice
+    ])
 
-    calculatedData.valueOfCar = 0
+    const monthlyLeasePayment = parseFloat(formData.monthlyLeasePayment)
+    const monthlyMileOverageLease = calcMileOverage(parseFloat(formData.milesPerMonth))
+    const recurringCostLease = sum([
+        monthlyLeasePayment,
+        monthlyMileOverageLease,
+        monthlyGasPrice,
+        insRate,
+        monthlyRepairPrice
+    ])
+
+    let valueOfCar = 0
     if (parseFloat(formData.yearsToKeep) < 15) {
-        calculatedData.valueOfCar = parseFloat(formData.displayDepreciationData[
+        valueOfCar = parseFloat(formData.displayDepreciationData[
             parseFloat(formData.yearsToKeep) - 1].value)
-    } else {
-        calculatedData.valueOfCar = 0
     }
 
-    calculatedData.totalGasPrice = calculatedData.monthlyGasPrice * parseFloat(formData.yearsToKeep) * 12
-    calculatedData.totalInsPrice = parseFloat(formData.insRate) * parseFloat(formData.yearsToKeep) * 12
-    calculatedData.totalRepairPrice = calculatedData.monthlyRepairPrice * parseFloat(formData.yearsToKeep) * 12
-    calculatedData.totalCostBuy = (
-        calculatedData.initialCostBuy
-        + calculatedData.totalGasPrice
-        + calculatedData.totalInsPrice
-        + calculatedData.totalRepairPrice
-        - calculatedData.valueOfCar
+    const yearsToKeep = parseFloat(formData.yearsToKeep)
+    const monthsFinanced = parseFloat(formData.monthsFinanced)
+    const totalGasPrice = monthlyGasPrice * yearsToKeep * 12
+    const totalInsPrice = insRate * yearsToKeep * 12
+    const totalRepairPrice = monthlyRepairPrice * yearsToKeep * 12
+
+    const totalFinanceCost = (yearsToKeep * 12 >= monthsFinanced ?
+        monthlyPaymentsBuy * monthsFinanced
+        :
+        monthlyPaymentsBuy * 12 * yearsToKeep
     )
 
-    if (parseFloat(formData.yearsToKeep) * 12 > parseFloat(formData.monthsFinanced)) {
-        calculatedData.totalCostBuy += (calculatedData.monthlyPaymentsBuy * parseFloat(formData.monthsFinanced))
-    } else {
-        calculatedData.totalCostBuy += (calculatedData.monthlyPaymentsBuy * parseFloat(formData.yearsToKeep) * 12)
+    const valueAfterFinance = (yearsToKeep * 12 >= monthsFinanced ?
+        valueOfCar
+        :
+        valueOfCar - (monthlyPaymentsBuy * monthsFinanced - monthlyPaymentsBuy * 12 * yearsToKeep)
+    )
+
+    let totalCostBuy = sum([
+        initialCostBuy,
+        totalGasPrice,
+        totalInsPrice,
+        totalRepairPrice,
+        totalFinanceCost
+    ]) - valueAfterFinance
+
+    totalCostBuy = Math.floor(totalCostBuy)
+
+    const totalMonthlyLeasePayments = yearsToKeep * 12 * monthlyLeasePayment + monthlyMileOverageLease
+
+    const totalCostLease = sum([
+        initialCostLease,
+        totalGasPrice,
+        totalInsPrice,
+        totalRepairPrice,
+        totalMonthlyLeasePayments
+    ])
+
+    const costPerMileBuy = (
+        totalCostBuy / (parseFloat(formData.milesPerMonth) * 12 * yearsToKeep)
+    )
+    const costPerMileLease = (
+        totalCostLease / (parseFloat(formData.milesPerMonth) * 12 * yearsToKeep)
+    )
+
+    const calculatedData = {
+        totalCostBuy,
+        totalCostLease,
+        salesTax,
+        downPayment,
+        titleFee,
+        insRate,
+        registrationFee,
+        initialCostBuy,
+        initialCostLease,
+        monthlyPaymentsBuy,
+        monthlyGasPrice,
+        monthlyRepairPrice,
+        recurringCostBuy,
+        monthlyLeasePayment,
+        monthlyMileOverageLease,
+        recurringCostLease,
+        valueAfterFinance,
+        costPerMileBuy,
+        costPerMileLease
     }
-
-    calculatedData.totalCostBuy = Math.floor(calculatedData.totalCostBuy)
-
-    calculatedData.totalCostLease = (
-        calculatedData.initialCostLease
-        + calculatedData.totalGasPrice
-        + calculatedData.totalInsPrice
-        + calculatedData.totalRepairPrice
-        + parseFloat(formData.yearsToKeep)
-        * 12
-        * calculatedData.monthlyLeasePayment
-        + calculatedData.monthlyMileOverageLease
-        * 12
-    )
-
-    calculatedData.costPerMileBuy = (
-        calculatedData.totalCostBuy
-        / (parseFloat(formData.milesPerMonth)
-        * 12
-        * parseFloat(formData.yearsToKeep))
-    )
-    calculatedData.costPerMileLease = (
-        calculatedData.totalCostLease
-        / (parseFloat(formData.milesPerMonth)
-        * 12
-        * parseFloat(formData.yearsToKeep))
-    )
 
     return calculatedData
 }

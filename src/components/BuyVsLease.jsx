@@ -15,7 +15,7 @@ class BuyVsLease extends Component {
                     type="Buy"
                     totalCost={this.props.calculatedData.totalCostBuy}
                     costPerMile={this.props.calculatedData.costPerMileBuy}
-                    valueOfCar={this.props.calculatedData.valueOfCar}
+                    valueAfterFinance={this.props.calculatedData.valueAfterFinance}
                     initialCost={this.props.calculatedData.initialCostBuy}
                     downPayment={this.props.calculatedData.downPayment}
                     salesTax={this.props.calculatedData.salesTax}
@@ -31,7 +31,7 @@ class BuyVsLease extends Component {
                     type="Lease"
                     totalCost={this.props.calculatedData.totalCostLease}
                     costPerMile={this.props.calculatedData.costPerMileLease}
-                    valueOfCar="0"
+                    valueAfterFinance="0"
                     initialCost={this.props.calculatedData.initialCostLease}
                     downPayment={this.props.calculatedData.downPayment}
                     salesTax="0"
