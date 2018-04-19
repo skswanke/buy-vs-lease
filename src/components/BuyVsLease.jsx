@@ -25,6 +25,8 @@ class BuyVsLease extends Component {
                     monthlyPayments={this.props.calculatedData.monthlyPaymentsBuy}
                     monthlyGasPrice={this.props.calculatedData.monthlyGasPrice}
                     monthlyRepairPrice={this.props.calculatedData.monthlyRepairPrice}
+                    financed={this.props.calculatedData.financed}
+                    valueAfterDown={this.props.calculatedData.valueAfterDown}
                     insRate={this.props.calculatedData.insRate}
                 />
                 <Compare

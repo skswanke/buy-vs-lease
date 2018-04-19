@@ -18,6 +18,8 @@ const Compare = ({
     monthlyGasPrice,
     monthlyRepairPrice,
     insRate,
+    financed,
+    valueAfterDown,
     monthlyMileOverageLease,
 }) => {
     const formatMoney = val => (!isNaN(parseFloat(val)) ?
@@ -32,13 +34,34 @@ const Compare = ({
                 </p>
                 <hr />
                 <p>Initial Cost: ${formatMoney(initialCost)}<br />
-                    <small>
-                        Down: ${formatMoney(downPayment)} <br />
-                        Tax: ${formatMoney(salesTax)} <br />
-                        Title: ${formatMoney(titleFee)} <br />
-                        Registration: ${formatMoney(registrationFee)}
-                    </small>
+                    {type === 'Lease' ?
+                        <small>
+                            Down: ${formatMoney(downPayment)} <br />
+                            Tax: ${formatMoney(salesTax)} <br />
+                            Title: ${formatMoney(titleFee)} <br />
+                            Registration: ${formatMoney(registrationFee)}
+                        </small>
+                        :
+                        <small>
+                            Down: ${formatMoney(downPayment)}
+                        </small>
+                    }
                 </p>
+                {type === 'Buy' ?
+                    <span>
+                        <hr />
+                        <p>Finance: ${formatMoney(financed)}<br />
+                            <small>
+                                Value: ${formatMoney(valueAfterDown)} <br />
+                                Tax: ${formatMoney(salesTax)} <br />
+                                Title: ${formatMoney(titleFee)} <br />
+                                Registration: ${formatMoney(registrationFee)}
+                            </small>
+                        </p>
+                    </span>
+                    :
+                    ''
+                }
                 <hr />
                 <p>Monthly Cost: ${formatMoney(recurringCost)}<br />
                     <small>

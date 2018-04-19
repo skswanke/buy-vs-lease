@@ -2,7 +2,6 @@
     "extends": "airbnb",
     "parser": "babel-eslint",
     "rules": {
-        "jsx-a11y/img-has-alt": "off",
         "semi": "off",
         "indent": ["error", 4],
         "prefer-const": "warn",

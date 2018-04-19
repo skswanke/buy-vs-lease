@@ -34,12 +34,10 @@ export function calculateDepreciationData(msrp, depreciationFactor) {
 
 const calcSalesTax = (r, P) => ((r / 100) * P)
 
-const sum = array => (array.reduce((total, num) => (total + num)))
-
-const calcLoanAmortization = (msrp, down, apr, months) => {
+const calcLoanAmortization = (principle, apr, months) => {
     // Loan Amortization
     // A=P∗(r(1+r)^n)/(((1+r)^n)−1)
-    const P = msrp - down
+    const P = principle
     const r = apr / 100 / 12
     const n = months
     return P * ((r * (1 + r) ** n) / ((1 + r) ** n - 1))
@@ -51,66 +49,60 @@ const calcMileOverage = mpm => ((mpm < 1000) ? 0 : ((mpm - 1000) * 0.2))
 
 
 export function calculateBuyVsLease(formData) {
-    const salesTax = calcSalesTax(parseFloat(formData.salesTax), parseFloat(formData.msrp))
     const downPayment = parseFloat(formData.downPayment)
     const titleFee = parseFloat(formData.titleFee)
     const registrationFee = parseFloat(formData.registrationFee)
+    const msrp = parseFloat(formData.msrp)
+    const apr = parseFloat(formData.apr)
+    const monthsFinanced = parseFloat(formData.monthsFinanced)
+    const insRate = parseFloat(formData.insRate)
+    const milesPerMonth = parseFloat(formData.milesPerMonth)
+    const mpg = parseFloat(formData.mpg)
+    const gasPrice = parseFloat(formData.gasPrice)
+    const monthlyLeasePayment = parseFloat(formData.monthlyLeasePayment)
+    const yearsToKeep = parseFloat(formData.yearsToKeep)
+    const valueAfterDown = msrp - downPayment
 
-    const initialCostBuy = sum([
-        parseFloat(formData.downPayment),
-        salesTax,
-        parseFloat(formData.titleFee),
-        parseFloat(formData.registrationFee)
-    ])
+    const salesTax = calcSalesTax(parseFloat(formData.salesTax), msrp)
 
-    const initialCostLease = sum([
-        parseFloat(formData.downPayment),
-        parseFloat(formData.titleFee),
-        parseFloat(formData.registrationFee)
-    ])
+    const initialCostBuy = downPayment
+
+    const initialCostLease = downPayment + titleFee + registrationFee
+
+    const financedBuy = msrp + salesTax + titleFee + registrationFee - downPayment
 
 
     const monthlyPaymentsBuy = calcLoanAmortization(
-        parseFloat(formData.msrp),
-        parseFloat(formData.downPayment),
-        parseFloat(formData.apr),
-        parseFloat(formData.monthsFinanced)
+        financedBuy,
+        apr,
+        monthsFinanced
     )
 
     const monthlyGasPrice = calcMonthlyGas(
-        parseFloat(formData.milesPerMonth),
-        parseFloat(formData.mpg),
-        parseFloat(formData.gasPrice)
+        milesPerMonth,
+        mpg,
+        gasPrice
     )
 
-    const monthlyRepairPrice = parseFloat(formData.msrp) / 120
-    const insRate = parseFloat(formData.insRate)
+    const monthlyRepairPrice = msrp / 120
 
-    const recurringCostBuy = sum([
-        monthlyPaymentsBuy,
-        monthlyGasPrice,
-        insRate,
-        monthlyRepairPrice
-    ])
+    const recurringCostBuy = monthlyPaymentsBuy + monthlyGasPrice + insRate + monthlyRepairPrice
 
-    const monthlyLeasePayment = parseFloat(formData.monthlyLeasePayment)
-    const monthlyMileOverageLease = calcMileOverage(parseFloat(formData.milesPerMonth))
-    const recurringCostLease = sum([
-        monthlyLeasePayment,
-        monthlyMileOverageLease,
-        monthlyGasPrice,
-        insRate,
-        monthlyRepairPrice
-    ])
+    const monthlyMileOverageLease = calcMileOverage(milesPerMonth)
+    const recurringCostLease = (
+        monthlyLeasePayment
+        + monthlyMileOverageLease
+        + monthlyGasPrice
+        + insRate
+        + monthlyRepairPrice
+    )
 
     let valueOfCar = 0
-    if (parseFloat(formData.yearsToKeep) < 15) {
+    if (yearsToKeep < 15) {
         valueOfCar = parseFloat(formData.displayDepreciationData[
-            parseFloat(formData.yearsToKeep) - 1].value)
+            yearsToKeep - 1].value)
     }
 
-    const yearsToKeep = parseFloat(formData.yearsToKeep)
-    const monthsFinanced = parseFloat(formData.monthsFinanced)
     const totalGasPrice = monthlyGasPrice * yearsToKeep * 12
     const totalInsPrice = insRate * yearsToKeep * 12
     const totalRepairPrice = monthlyRepairPrice * yearsToKeep * 12
@@ -127,31 +119,23 @@ export function calculateBuyVsLease(formData) {
         valueOfCar - (monthlyPaymentsBuy * monthsFinanced - monthlyPaymentsBuy * 12 * yearsToKeep)
     )
 
-    let totalCostBuy = sum([
-        initialCostBuy,
-        totalGasPrice,
-        totalInsPrice,
-        totalRepairPrice,
-        totalFinanceCost
-    ]) - valueAfterFinance
+    let totalCostBuy = (
+        initialCostBuy + totalGasPrice + totalInsPrice + totalRepairPrice + totalFinanceCost
+    ) - valueAfterFinance
 
     totalCostBuy = Math.floor(totalCostBuy)
 
     const totalMonthlyLeasePayments = yearsToKeep * 12 * (monthlyLeasePayment + monthlyMileOverageLease)
 
-    const totalCostLease = sum([
-        initialCostLease,
-        totalGasPrice,
-        totalInsPrice,
-        totalRepairPrice,
-        totalMonthlyLeasePayments
-    ])
+    const totalCostLease = (
+        initialCostLease + totalGasPrice + totalInsPrice + totalRepairPrice + totalMonthlyLeasePayments
+    )
 
     const costPerMileBuy = (
-        totalCostBuy / (parseFloat(formData.milesPerMonth) * 12 * yearsToKeep)
+        totalCostBuy / (milesPerMonth * 12 * yearsToKeep)
     )
     const costPerMileLease = (
-        totalCostLease / (parseFloat(formData.milesPerMonth) * 12 * yearsToKeep)
+        totalCostLease / (milesPerMonth * 12 * yearsToKeep)
     )
 
     const calculatedData = {
@@ -172,6 +156,8 @@ export function calculateBuyVsLease(formData) {
         monthlyMileOverageLease,
         recurringCostLease,
         valueAfterFinance,
+        financed: financedBuy,
+        valueAfterDown,
         costPerMileBuy,
         costPerMileLease
     }
