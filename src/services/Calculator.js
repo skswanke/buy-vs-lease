@@ -84,7 +84,7 @@ export function calculateBuyVsLease(formData) {
         gasPrice
     )
 
-    const monthlyRepairPrice = msrp / 120
+    const monthlyRepairPrice = 0
 
     const recurringCostBuy = monthlyPaymentsBuy + monthlyGasPrice + insRate + monthlyRepairPrice
 
@@ -103,20 +103,21 @@ export function calculateBuyVsLease(formData) {
             yearsToKeep - 1].value)
     }
 
-    const totalGasPrice = monthlyGasPrice * yearsToKeep * 12
-    const totalInsPrice = insRate * yearsToKeep * 12
-    const totalRepairPrice = monthlyRepairPrice * yearsToKeep * 12
+    const monthsToKeep = yearsToKeep * 12
+    const totalGasPrice = monthlyGasPrice * monthsToKeep
+    const totalInsPrice = insRate * monthsToKeep
+    const totalRepairPrice = monthlyRepairPrice * monthsToKeep
 
-    const totalFinanceCost = (yearsToKeep * 12 >= monthsFinanced ?
+    const totalFinanceCost = (monthsToKeep >= monthsFinanced ?
         monthlyPaymentsBuy * monthsFinanced
         :
-        monthlyPaymentsBuy * 12 * yearsToKeep
+        monthlyPaymentsBuy * monthsToKeep
     )
 
-    const valueAfterFinance = (yearsToKeep * 12 >= monthsFinanced ?
+    const valueAfterFinance = (monthsToKeep >= monthsFinanced ?
         valueOfCar
         :
-        valueOfCar - (monthlyPaymentsBuy * monthsFinanced - monthlyPaymentsBuy * 12 * yearsToKeep)
+        valueOfCar - (monthlyPaymentsBuy * monthsFinanced - monthlyPaymentsBuy * monthsToKeep)
     )
 
     let totalCostBuy = (
@@ -125,17 +126,17 @@ export function calculateBuyVsLease(formData) {
 
     totalCostBuy = Math.floor(totalCostBuy)
 
-    const totalMonthlyLeasePayments = yearsToKeep * 12 * (monthlyLeasePayment + monthlyMileOverageLease)
+    const totalMonthlyLeasePayments = monthsToKeep * (monthlyLeasePayment + monthlyMileOverageLease)
 
     const totalCostLease = (
         initialCostLease + totalGasPrice + totalInsPrice + totalRepairPrice + totalMonthlyLeasePayments
     )
 
     const costPerMileBuy = (
-        totalCostBuy / (milesPerMonth * 12 * yearsToKeep)
+        totalCostBuy / (milesPerMonth * monthsToKeep)
     )
     const costPerMileLease = (
-        totalCostLease / (milesPerMonth * 12 * yearsToKeep)
+        totalCostLease / (milesPerMonth * monthsToKeep)
     )
 
     const calculatedData = {

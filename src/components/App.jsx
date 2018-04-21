@@ -21,7 +21,7 @@ class App extends Component {
             registrationFee: 50,
             yearsToKeep: 5,
             monthsFinanced: 60,
-            monthlyLeasePayment: 200,
+            monthlyLeasePayment: 300,
             apr: 3,
             insRate: 100,
             milesPerMonth: 1000,

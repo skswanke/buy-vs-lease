@@ -17,3 +17,7 @@ label.control-label {
 input[type=range] {
     padding: 0;
 }
+
+#depreciation {
+    border: none;
+}
