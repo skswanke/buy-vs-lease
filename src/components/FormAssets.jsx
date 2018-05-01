@@ -1,28 +1,26 @@
 /* eslint object-curly-newline: off */
 
 import React from 'react'
-import { FormGroup, FormControl, ControlLabel, HelpBlock, InputGroup } from 'react-bootstrap'
+import { FormGroup, FormControl, ControlLabel, InputGroup } from 'react-bootstrap'
 
-export const FieldGroup = ({ id, label, help, ...props }) => (
+export const FieldGroup = ({ id, label, ...props }) => (
     <FormGroup controlId={id}>
         <ControlLabel>{label}</ControlLabel>
         <FormControl {...props} />
-        {help && <HelpBlock>{help}</HelpBlock>}
     </FormGroup>
 )
 
-export const MoneyFieldGroup = ({ id, label, help, ...props }) => (
+export const MoneyFieldGroup = ({ id, label, ...props }) => (
     <FormGroup controlId={id}>
         <ControlLabel>{label}</ControlLabel>
         <InputGroup>
             <InputGroup.Addon>$</InputGroup.Addon>
             <FormControl type="number" min={0.1} step={0.1} {...props} />
         </InputGroup>
-        {help && <HelpBlock>{help}</HelpBlock>}
     </FormGroup>
 )
 
-export const PercentFieldGroup = ({ id, label, help, ...props }) => (
+export const PercentFieldGroup = ({ id, label, ...props }) => (
     <FormGroup>
         <ControlLabel>{label}</ControlLabel>
         <InputGroup>
@@ -31,6 +29,5 @@ export const PercentFieldGroup = ({ id, label, help, ...props }) => (
                 <span>%</span>
             </InputGroup.Addon>
         </InputGroup>
-        {help && <HelpBlock>{help}</HelpBlock>}
     </FormGroup>
 )
