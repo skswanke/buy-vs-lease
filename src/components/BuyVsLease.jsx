@@ -1,54 +1,45 @@
-import React, { Component } from 'react'
+import React from 'react'
 import Compare from './Compare';
 import '../css/BuyVsLease.css'
 
-class BuyVsLease extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {}
-    }
-
-    render() {
-        return (
-            <div className="buy-vs-lease col-sm-6" >
-                <Compare
-                    type="Buy"
-                    totalCost={this.props.calculatedData.totalCostBuy}
-                    costPerMile={this.props.calculatedData.costPerMileBuy}
-                    valueAfterFinance={this.props.calculatedData.valueAfterFinance}
-                    initialCost={this.props.calculatedData.initialCostBuy}
-                    downPayment={this.props.calculatedData.downPayment}
-                    salesTax={this.props.calculatedData.salesTax}
-                    titleFee={this.props.calculatedData.titleFee}
-                    registrationFee={this.props.calculatedData.registrationFee}
-                    recurringCost={this.props.calculatedData.recurringCostBuy}
-                    monthlyPayments={this.props.calculatedData.monthlyPaymentsBuy}
-                    monthlyGasPrice={this.props.calculatedData.monthlyGasPrice}
-                    monthlyRepairPrice={this.props.calculatedData.monthlyRepairPrice}
-                    financed={this.props.calculatedData.financed}
-                    valueAfterDown={this.props.calculatedData.valueAfterDown}
-                    insRate={this.props.calculatedData.insRate}
-                />
-                <Compare
-                    type="Lease"
-                    totalCost={this.props.calculatedData.totalCostLease}
-                    costPerMile={this.props.calculatedData.costPerMileLease}
-                    valueAfterFinance="0"
-                    initialCost={this.props.calculatedData.initialCostLease}
-                    downPayment={this.props.calculatedData.downPayment}
-                    salesTax="0"
-                    titleFee={this.props.calculatedData.titleFee}
-                    registrationFee={this.props.calculatedData.registrationFee}
-                    recurringCost={this.props.calculatedData.recurringCostLease}
-                    monthlyPayments={this.props.calculatedData.monthlyLeasePayment}
-                    monthlyGasPrice={this.props.calculatedData.monthlyGasPrice}
-                    monthlyRepairPrice={this.props.calculatedData.monthlyRepairPrice}
-                    insRate={this.props.calculatedData.insRate}
-                    monthlyMileOverageLease={this.props.calculatedData.monthlyMileOverageLease}
-                />
-            </div>
-        )
-    }
-}
+const BuyVsLease = calculatedData => (
+    <div className="buy-vs-lease col-sm-6" >
+        <Compare
+            type="Buy"
+            totalCost={calculatedData.totalCostBuy}
+            costPerMile={calculatedData.costPerMileBuy}
+            valueAfterFinance={calculatedData.valueAfterFinance}
+            initialCost={calculatedData.initialCostBuy}
+            downPayment={calculatedData.downPayment}
+            salesTax={calculatedData.salesTax}
+            titleFee={calculatedData.titleFee}
+            registrationFee={calculatedData.registrationFee}
+            recurringCost={calculatedData.recurringCostBuy}
+            monthlyPayments={calculatedData.monthlyPaymentsBuy}
+            monthlyGasPrice={calculatedData.monthlyGasPrice}
+            monthlyRepairPrice={calculatedData.monthlyRepairPrice}
+            financed={calculatedData.financed}
+            valueAfterDown={calculatedData.valueAfterDown}
+            insRate={calculatedData.insRate}
+        />
+        <Compare
+            type="Lease"
+            totalCost={calculatedData.totalCostLease}
+            costPerMile={calculatedData.costPerMileLease}
+            valueAfterFinance="0"
+            initialCost={calculatedData.initialCostLease}
+            downPayment={calculatedData.downPayment}
+            salesTax="0"
+            titleFee={calculatedData.titleFee}
+            registrationFee={calculatedData.registrationFee}
+            recurringCost={calculatedData.recurringCostLease}
+            monthlyPayments={calculatedData.monthlyLeasePayment}
+            monthlyGasPrice={calculatedData.monthlyGasPrice}
+            monthlyRepairPrice={calculatedData.monthlyRepairPrice}
+            insRate={calculatedData.insRate}
+            monthlyMileOverageLease={calculatedData.monthlyMileOverageLease}
+        />
+    </div>
+)
 
 export default BuyVsLease
